@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microserviço de Dicionário</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #333;
+        }
+        label, input, button {
+            margin: 10px 0;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 80%;
+            max-width: 600px;
+            overflow-x: auto;
+        }
+    </style>
+    <script>
+        async function processarPalavra() {
+            const word = document.getElementById('word').value;
+            
+            const response = await fetch('http://localhost:9500/processar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ word })
+            });
+        }
+
+        async function imprimirDicionario() {
+            const response = await fetch('http://localhost:9500/imprimir');
+            const data = await response.json();
+            document.getElementById('output').innerText = JSON.stringify(data.dictionary, null, 2);
+        }
+    </script>
+</head>
+<body>
+    <h1>Microserviço de Dicionário</h1>
+    
+    <label for="word">Digite uma palavra:</label>
+    <input type="text" id="word" placeholder="Digite uma palavra">
+    <button onclick="processarPalavra()">Enviar Palavra</button>
+    <button onclick="imprimirDicionario()">Imprimir Dicionário</button>
+
+    <h3>Dicionário Atualizado:</h3>
+    <pre id="output"></pre>
+</body>
+</html>
